@@ -1,0 +1,74 @@
+.header {
+    grid-area: header;
+    grid-column: 1 / 7;
+    grid-row: 1;
+    background-color: #212529;
+    line-height: 5rem;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+}
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+   }
+
+.rightCol{
+    grid-column: 6/7;
+    grid-row: 2/9;
+    background-color: lightblue;
+  }
+  .mid{
+    background-color: lightgrey;
+    grid-column: 1/6;
+    grid-row: 2 / 9;
+  }
+
+
+button{
+    background:#1AAB8A;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:30px;
+    font-size:0.8em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+
+  button:hover{
+    background:#fff;
+    color:#1AAB8A;
+  }
+  button:before,button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #1AAB8A;
+    transition:400ms ease all;
+  }
+  button:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  button:hover:before,button:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+
+input{
+    background: #fff;
+    height:25px;
+    font-size:0.8em;
+}
