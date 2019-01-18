@@ -1,6 +1,9 @@
 import store from '../../config/store'
 import { CIRCLE_WIDTH} from '../../config/constants'
 import { CIRCLE_HEIGHT} from '../../config/constants'
+import Socket from 'socket.io-client'
+
+var socket = Socket.connect("http://143.248.38.120:80");
 
 export default function handleMovement(player) {
 
@@ -18,6 +21,7 @@ export default function handleMovement(player) {
         }
     }
 
+    
     function dispatchMove(direction) {
         store.dispatch({
             type: 'MOVE_PLAYER',
@@ -30,7 +34,27 @@ export default function handleMovement(player) {
     function handleKeyDown(e) {
         e.preventDefault()
 
-        switch(e.keyCode) {
+        socket.emit("keydown", e.keyCode);
+
+        console.log(e.keyCode);
+
+        // switch(e.keyCode) {
+        //     case 37:
+        //         return dispatchMove('WEST')
+        //     case 38:
+        //         return dispatchMove('NORTH')
+        //     case 39:
+        //         return dispatchMove('EAST')
+        //     case 40:
+        //         return dispatchMove('SOUTH')
+        //     default:
+        //         console.log(e.keyCode)
+        // }
+    }
+
+    socket.on("handlemove", (msg)=>{
+        console.log(msg);
+          switch(msg) {
             case 37:
                 return dispatchMove('WEST')
             case 38:
@@ -40,12 +64,13 @@ export default function handleMovement(player) {
             case 40:
                 return dispatchMove('SOUTH')
             default:
-                console.log(e.keyCode)
+                console.log(msg)
         }
-    }
+    })
 
     window.addEventListener('keydown', (e) => {
-        handleKeyDown(e)
+        socket.emit('clicked', e.keyCode);
+      // handleKeyDown(e)
     })
 
     return player
