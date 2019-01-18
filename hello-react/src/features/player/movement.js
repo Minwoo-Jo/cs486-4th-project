@@ -1,6 +1,7 @@
 import store from '../../config/store'
 import { CIRCLE_WIDTH} from '../../config/constants'
 import { CIRCLE_HEIGHT} from '../../config/constants'
+import World from '../world'
 
 export default function handleMovement(player) {
 
@@ -29,8 +30,13 @@ export default function handleMovement(player) {
 
     function handleKeyDown(e) {
         e.preventDefault()
+        socket.emit('playermove', e);
 
-        switch(e.keyCode) {
+    }
+
+    socket.on('handlemove', (msg) => {
+        if(msg.id==socket.id){
+        switch(msg.value) {
             case 37:
                 return dispatchMove('WEST')
             case 38:
@@ -40,9 +46,10 @@ export default function handleMovement(player) {
             case 40:
                 return dispatchMove('SOUTH')
             default:
-                console.log(e.keyCode)
+                console.log(msg.value)
         }
     }
+    })
 
     window.addEventListener('keydown', (e) => {
         handleKeyDown(e)
