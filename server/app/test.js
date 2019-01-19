@@ -13,108 +13,198 @@ app.use(bodyParser.json());
 // var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost:27017/local', { useNewUrlParser: true });
 // ROOM STATUS
-var rooms = () => {
-    return io.sockets.adapter.rooms;
-};
+
+//
+// var rooms = () => {
+//     var origin = Object.keys(io.sockets.adapter.rooms);
+//     var rooms = []
+//     origin.forEach((room_id) => {
+//         if( room_id > 7 ) {
+//             rooms.push(room_id);
+//         }
+//     })
+
+//     return rooms;
+// };
 var clients = () => {
     return io.sockets.clients().connected;
 }
 var players = [];
 var lobby = '000000';
+
+var Rooms = [{
+    id: '000000',
+    players: [],
+    state: null
+}]
+
+
 //SOCKET
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    var User = {
-        name: String,
-        id: String
+    var user_info = {
+        id: socket.id,
+        name: null,
+        isMaster: false,
+        current_room: null
     }
-    socket.emit('reload', players);
-    players = players.concat([{id:socket.id, message:"test"}]);
-    console.log(players);
-    socket.emit('get userlist', players);
+    console.log('#### ' + socket.id + ' connected');
+
+    // SET LOBBY
+    console.log("set lobby");
+    user_info.current_room = lobby;
     socket.join(lobby);
-    socket.leave(lobby);
-    socket.join("111111");
-    socket.on('enter lobby', (msg) => {
-        User.name = msg;
-        User.id = socket.id;
-        socket.join(current_room_id);
-        socket.emit('reload', rooms);
-    })
-    socket.on('create room', () => {
-        var room_id = moment().format("mmss");
-        socket.join(room_id);
-        io.to(lobby).emit('reload lobby', rooms);
-    })
-    socket.on('enter room', (msg) => {
-        socket.join(msg);
-        io.to(lobby).emit('reload lobby', rooms);
-    })
-    socket.on('exit room', () => {
-        socket.join(lobby);
-        io.to(lobby).emit('reload lobby', rooms);
+    Rooms.find(function (room) {
+        return room.id == user_info.current_room
+    }).players.push(user_info);
+    socket.emit('room_info', Rooms.find(function (room) {
+        return room.id = user_info.current_room
+    }))
+    console.log(Rooms.find(function (room) {
+        return room.id == user_info.current_room
+    }));
+    // SET USER NAME
+    socket.on('set_name', (msg) => {
+        user_info.name = msg;
     })
 
+    socket.emit('update_user_count', clients.length);
+    // JOIN ROOM
+    socket.on('join_room', (room_id) => {
+        console.log("join room" + room_id);
+
+        //LEAVE BEFORE ROOM
+        Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.splice(Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.findIndex((user) => {
+            return user.id == user_info.id
+        }), 1);
+        user_info.current_room = lobby;
+        user_info.isMaster = false;
+        //JOIN NEW ROOM
+        user_info.current_room = room_id;
+        socket.join(user_info.current_room);
+        Rooms.find(function (room) {
+            return room.id == room_id
+        }).players.push(user_info);
+
+        socket.emit('room_info', Rooms.find(function (room) {
+            return room.id = user_info.current_room
+        }))
+
+    })
+    //LEAVE ROOM
+    socket.on('leave_room', (room_id) => {
+
+        console.log("leave room" + room_id);
+        //LEAVE BEFORE ROOM
+        Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.splice(Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.findIndex((user) => {
+            return user.id == user_info.id
+        }), 1);
+        user_info.current_room = lobby;
+        user_info.isMaster = false;
+        socket.join(lobby);
+        //JOIN LOBBY
+        Rooms.find(function (room) {
+            return room.id == user_info.current_room
+        }).players.push(user_info);
+        socket.emit('room_info', Rooms.find(function (room) {
+            return room.id = user_info.current_room
+        }))
+
+
+        socket.emit('room_info', Rooms.find(function (room) {
+            return room.id = user_info.current_room
+        }))
+    })
+    //CREATE ROOM
+    socket.on('create_room', () => {
+        console.log("creat_room");
+        console.log(Rooms);
+        var room_id = moment().format("mmss");
+
+        //LEAVE BEFORE ROOM
+        Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.splice(Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.findIndex((user) => {
+            return user.id == user_info.id
+        }), 1);
+        user_info.current_room = lobby;
+        user_info.isMaster = false;
+
+        //JOIN NEW ROOM
+
+        socket.join(room_id);
+        user_info.current_room = room_id;
+        user_info.isMaster = true;
+        Rooms.push({
+            id: room_id,
+            players: [],
+            state: "waiting"
+        })
+        Rooms.find(function (room) {
+            return room.id == room_id
+        }).players.push(user_info);
+        socket.emit('update_room_list', Rooms);
+        socket.emit('room_info', Rooms.find(function (room) {
+            return room.id = user_info.current_room
+        }))
+
+    })
+    // DISCONNECT
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        players.splice(players.findIndex(function(player){
-            return player.id==socket.id
-        }),1);
-        console.log(players);
+        console.log(user_info.current_room);
+        console.log(Rooms);
+        // console.log( Rooms.find((room_id) => {
+        //     return room_id == user_info.current_room;
+        // }));
+        // //LEAVE ROOM
+        //LEAVE BEFORE ROOM
+        Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.splice(Rooms.find((room) => {
+            return room.id == user_info.current_room;
+        }).players.findIndex((user) => {
+            return user.id == user_info.id
+        }), 1);
+        // user_info.current_room = lobby;
+        // user_info.isMaster = false;
+
     });
+    ///
 
-    socket.on('clicked', (msg) => {
-        console.log("yep" + msg);
-        if (msg == "plus")
-            io.emit('change', {
-                id: socket.id,
-                key: msg
-            });
-        if (msg == "minus")
-            io.emit('change', {
-                id: socket.id,
-                key: msg
-            });
-    })
-    socket.on('playermove', (msg) => {
-        console.log("msg");
-        io.emit('handlemove', {
-            id: socket.id,
-            value: msg
-        });
-    })
+    socket.on('update_room_list', () => {
+        console.log(Rooms);
 
-    socket.on('button', (msg) => {
-        console.log(msg);
-        io.emit('button', {
-            id: socket.id,
-            key: "button"
-        });
-    })
-    socket.on('callplayers', (msg) => {
-        var list = Object.keys(clients());
-        console.log(list);
-        console.log(rooms());
-      
-        // console.log(Object.keys(rooms));
-        // io.emit('getplayers', list)
-    })
-    socket.on('add name', (msg)=> {
-        console.log(msg);
-        socket.emit('get names', players);
-    })
-    var  i =0;
-    socket.on('send message', (msg) => {
-        players.find(function(e){
-            return e.id == socket.id
-        }).message = msg;
-        io.emit('reload', players);
-        console.log(players);
-        console.log(i++);
-    })
-    socket.on('callRooms', () => {
-        console.log(rooms());
-        socket.emit('roomlist', Object.keys(rooms()));
+        socket.emit('update_room_list', Rooms);
     })
 
 });
+
+// function check(Rooms, room_id, player_id) {
+//     return (a) => {
+//         a = (b) => {
+//             b = (c) => {
+//                 if(Rooms.Rooms.find((room) => {
+//                     return room.id == room_id;
+//                 })!=null){
+//                     c = Rooms.Rooms.find((room) => {
+//                         return room.id == room_id;
+//                     })
+//                 }
+                
+//             }
+        
+            
+//         }
+
+//     }
+}
