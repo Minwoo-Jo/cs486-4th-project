@@ -56,3 +56,19 @@ check = (rooms) => {
 }
 
 console.log(check(1)(2)(3))
+
+var a = {
+    id : "test",
+    key : true
+}
+
+update = (test) => {
+    return (key) => {
+        return (value) =>{
+            test[key]= value
+        } 
+    }
+}
+console.log(a.id)
+update(a)("id")("YEYP")
+console.log(a.id)
