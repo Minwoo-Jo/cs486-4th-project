@@ -1,18 +1,26 @@
 import React from 'react';
-import Socket from 'socket.io-client';
 import './Home.css';
 import Wait from './Wait'
 import Main from './Main'
-
-var socket = Socket.connect("http://143.248.38.120:80");
+import {sendName,callRoomList} from '../api/customSocket'
 
 class Home extends React.Component{
     constructor(){
         super()
         this.state={
             myName:"",
-            List:""
+            List:[]
         }
+        // socket.on("get names",msg=>{
+        //     this.setState({
+        //         List : msg
+        //     })
+        // })
+        // socket.on("reload",msg=>{
+        //     // this.setState({
+        //     //     players: this.state.players.splice(0, this.length).concat(msg)
+        //     // })
+        // })
         this.handleChange = this.handleChange.bind(this);
         this.onClickButton = this.onClickButton.bind(this);
     }
@@ -24,14 +32,8 @@ class Home extends React.Component{
     }
 
     onClickButton(){
-        console.log(this.state.List)
-        socket.emit("add name",this.state.myName);
-        socket.on("get names",msg=>{
-            this.setState({
-                List : msg
-            })
-            console.log(this.state.List)
-        })
+        callRoomList()
+        sendName("sendName",this.state.myName);
     }
 
     render(){
@@ -45,7 +47,7 @@ class Home extends React.Component{
             {/* 게임상태에 따라 버튼 클릭 가능 불가능 하게 만들기 */}
 
              <div class="rightCol">
-             <Wait name={this.state.List}/>
+             <Wait />
              </div>
 
              <div class="mid">
@@ -56,7 +58,5 @@ class Home extends React.Component{
         );
     }
 }
-
-
 
 export default Home;

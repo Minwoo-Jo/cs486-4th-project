@@ -1,0 +1,25 @@
+.button_base {
+    margin: 0;
+    border: 0;
+    font-size: 18px;
+    position: relative;
+    left: 60%;
+    width: 80px;
+    height: 30px;
+    text-align: center;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.button_base:hover {
+    cursor: pointer;
+}
+
+.b01_simple_rollover {
+    color: #000000;
+    border: #000000 solid 1px;
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+/* 입장가능, 불가능 버튼 색깔 다르게 */
