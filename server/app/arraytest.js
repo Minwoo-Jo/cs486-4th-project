@@ -44,3 +44,15 @@ var a = (c) => {
 }
 
 console.log(a(3)(5))
+
+check = (rooms) => {
+    return (room_id) => {
+        room_id++
+        rooms++
+        return (player_id) => {
+            return rooms + " " + room_id + " " + player_id
+        }
+    }
+}
+
+console.log(check(1)(2)(3))
