@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import socketIOClient from "socket.io-client"
-import {subscribeGame} from './api'
-import {sendMessage} from './src'
-//var socket;
+
+import {sendMessage} from '../api/customSocket'
+
 class Main extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             room_id: "000000",
             players: [],
             message: String
         }
     }
+
+
     // connectServer = () => {
     //     if (socket == null) {
     //         socket = socketIOClient("http://143.248.38.120");
@@ -23,9 +24,9 @@ class Main extends Component {
     //         })
     //     }
     // }
+
     handleSubmit = (e) => {
         // 페이지 리로딩 방지
-
         e.preventDefault();
         // 상태값을 onCreate 를 통하여 부모에게 전달
         this.props.onCreate(this.state);
@@ -35,16 +36,12 @@ class Main extends Component {
         }
         )
     }
-    // sendMessage = () => {
-    //     console.log("YEP")
-    //     socket.emit('send message', this.state.message)
 
-    // }
-    // handleChange = (e) => {
-    //     this.setState({
-    //         message: e.target.value
-    //     })
-    // }
+    handleChange = (e) => {
+        this.setState({
+            message: e.target.value
+        })
+    }
 
     render() {
         const list = this.state.players.map(player =>
@@ -62,13 +59,15 @@ class Main extends Component {
                 {list}
                 <input
                     value={this.state.message}
-                    onChange={this.handleChange}></input> <button onClick={sendMessage(this.state.message)}
-                    >SEND</button>
+
+                    onChange={this.handleChange}></input> 
+
+                 <button onClick={sendMessage(this.state.message)}>SEND</button>
+
                 <div>{this.state.message}</div>
             </div>
         )
     }
-
 }
 
 export default Main;
