@@ -45,18 +45,18 @@ class Home extends React.Component{
             {/* 게임상태에 따라 버튼 클릭 가능 불가능 하게 만들기 */}
 
              <div class="rightCol">
-             <Wait name={this.state.List}/>
+             <Wait name={this.state.myName}/>
              </div>
 
              <div class="mid">
-             <Main/>             
+             <Main/>  
+         
              
              </div>
             </div>        
         );
     }
 }
-
 
 
 export default Home;

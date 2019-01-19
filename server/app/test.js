@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 // // MONGO DB
 // var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost:27017/local', { useNewUrlParser: true });
-
 // ROOM STATUS
 var rooms = () => {
     return io.sockets.adapter.rooms;
@@ -20,7 +19,6 @@ var rooms = () => {
 var clients = () => {
     return io.sockets.clients().connected;
 }
-
 var players = [];
 var lobby = '000000';
 //SOCKET
@@ -35,6 +33,8 @@ io.on('connection', (socket) => {
     console.log(players);
     socket.emit('get userlist', players);
     socket.join(lobby);
+    socket.leave(lobby);
+    socket.join("111111");
     socket.on('enter lobby', (msg) => {
         User.name = msg;
         User.id = socket.id;
@@ -101,14 +101,20 @@ io.on('connection', (socket) => {
     })
     socket.on('add name', (msg)=> {
         console.log(msg);
-        socket.emit('get names', msg+"!!!!");
+        socket.emit('get names', players);
     })
+    var  i =0;
     socket.on('send message', (msg) => {
         players.find(function(e){
             return e.id == socket.id
         }).message = msg;
         io.emit('reload', players);
         console.log(players);
+        console.log(i++);
+    })
+    socket.on('callRooms', () => {
+        console.log(rooms());
+        socket.emit('roomlist', Object.keys(rooms()));
     })
 
 });

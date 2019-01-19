@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import socketIOClient from "socket.io-client"
-var socket;
+import {subscribeGame} from './api'
+import {sendMessage} from './src'
+//var socket;
 class Main extends Component {
     constructor() {
         super();
@@ -10,17 +12,17 @@ class Main extends Component {
             message: String
         }
     }
-    connectServer = () => {
-        if (socket == null) {
-            socket = socketIOClient("http://143.248.38.120");
+    // connectServer = () => {
+    //     if (socket == null) {
+    //         socket = socketIOClient("http://143.248.38.120");
             
-            socket.on('reload', (msg) => {
-                this.setState({
-                    players: this.state.players.splice(0, this.length).concat(msg)
-                })
-            })
-        }
-    }
+    //         socket.on('reload', (msg) => {
+    //             this.setState({
+    //                 players: this.state.players.splice(0, this.length).concat(msg)
+    //             })
+    //         })
+    //     }
+    // }
     handleSubmit = (e) => {
         // 페이지 리로딩 방지
 
@@ -33,16 +35,16 @@ class Main extends Component {
         }
         )
     }
-    sendMessage = () => {
-        console.log("YEP")
-        socket.emit('send message', this.state.message)
+    // sendMessage = () => {
+    //     console.log("YEP")
+    //     socket.emit('send message', this.state.message)
 
-    }
-    handleChange = (e) => {
-        this.setState({
-            message: e.target.value
-        })
-    }
+    // }
+    // handleChange = (e) => {
+    //     this.setState({
+    //         message: e.target.value
+    //     })
+    // }
 
     render() {
         const list = this.state.players.map(player =>
@@ -56,12 +58,11 @@ class Main extends Component {
             </div>);
         return (
             <div>
-                <button onClick={this.connectServer}>연결</button>
                 <hr></hr>
                 {list}
                 <input
                     value={this.state.message}
-                    onChange={this.handleChange}></input> <button onClick={this.sendMessage}
+                    onChange={this.handleChange}></input> <button onClick={sendMessage(this.state.message)}
                     >SEND</button>
                 <div>{this.state.message}</div>
             </div>

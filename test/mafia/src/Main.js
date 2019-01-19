@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import socketIOClient from "socket.io-client"
-var socket;
+import { subscribeGame } from "./api/CustomSocket"
+import { sendMessage } from "./api/CustomSocket"
 class Main extends Component {
     constructor() {
         super();
@@ -9,18 +9,21 @@ class Main extends Component {
             players: [],
             message: String
         }
-    }
-    connectServer = () => {
-        if (socket == null) {
-            socket = socketIOClient("http://143.248.38.120");
-
-            socket.on('reload', (msg) => {
-                this.setState({
-                    players: this.state.players.splice(0, this.length).concat(msg)
-                })
+        subscribeGame((err, msg)=> {
+            this.setState({
+                players: this.state.players.splice(0, this.length).concat(msg)
             })
-        }
+        })
+        // socket = socketIOClient("http://143.248.38.120");
+ 
+
+        // socket.on('reload', (msg) => {
+        //     this.setState({
+        //         players: this.state.players.splice(0, this.length).concat(msg)
+        //     })
+        // })
     }
+  
     handleSubmit = (e) => {
         // 페이지 리로딩 방지
 
@@ -33,24 +36,25 @@ class Main extends Component {
         }
         )
     }
-    sendMessage = () => {
-        console.log("YEP")
-        socket.emit('send message', this.state.message)
+    // sendMessage = () => {
+    //     console.log("YEP")
+    //     socket.emit('send message', this.state.message)
 
-    }
+    // }
     handleChange = (e) => {
         this.setState({
             message: e.target.value
         })
     }
-
-
+    sendMessage = () => {
+        sendMessage(this.state.message)
+    }
 
 
     render() {
         const list = this.state.players.map(player =>
             <div>
-                <div>{player.message} </div>
+                <div>{player.message}</div>
                 <p></p>
                 {player.id} 
                 <br>
@@ -59,7 +63,6 @@ class Main extends Component {
             </div>);
         return (
             <div>
-                <button onClick={this.connectServer}>연결</button>
                 <hr></hr>
                 {list}
                 <input
@@ -70,7 +73,6 @@ class Main extends Component {
             </div>
         )
     }
-
 }
 
 
