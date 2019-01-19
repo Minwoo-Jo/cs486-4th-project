@@ -1,40 +1,49 @@
 import React from 'react';
 import './Wait.css';
-import {getRoomList,enterRoom} from '../api/customSocket'
+import {getRoomList,enterRoom,createRoom,getJoinRoomInfo} from '../api/customSocket'
 
 class Wait extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            roomList:[]//room name, user count
+            roomList:[],//room name, user count
+            showRoomList:false
         }
         this.setState({
             roomList : this.state.roomList.concat(props.list)
         })
         getRoomList((err,msg)=>{
-            console.log(msg)
+            console.log("getroomlist")
             this.setState({
-                roomList:this.state.roomList.splice(0,this.length).concat(msg)
-            })
+                roomList:msg,
+                showRoomList : true
+            })  
         })
+         this.onClickButton = this.onClickButton.bind(this);
       }
-      onClickButton(){
-      console.log("cliecked");
-      enterRoom("room.id구해서 보내기")
+    onClickButton(msg){
+        console.log("clicked")
+        enterRoom(msg)
+    }
+    onCreateRoom(){
+        createRoom();
     }
     render(){
+        console.log(this.state.showRoomList)
         var cnt=1;
         const list = this.state.roomList.map(room =>
             <div>
-                <div>{cnt++}.room name   <div class="button_base b01_simple_rollover" onClick={this.onClickButton}>입장</div> </div>
-                <p></p>
+                <div>{cnt++}.{room.id} </div>
+                <p></p><button onClick={()=>this.onClickButton(room.id)}>
+             입장
+             </button>
                 사람 수<div class="back"></div>
                 <br>
                 </br>
                 <br></br>
             </div>);
-        return (  
-            <div>{list}</div>
+        return (
+           this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}>방 만들기</button></div>: <div>주의사항</div>
         );
     }
 }

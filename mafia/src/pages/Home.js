@@ -11,16 +11,6 @@ class Home extends React.Component{
             myName:"",
             List:[]
         }
-        // socket.on("get names",msg=>{
-        //     this.setState({
-        //         List : msg
-        //     })
-        // })
-        // socket.on("reload",msg=>{
-        //     // this.setState({
-        //     //     players: this.state.players.splice(0, this.length).concat(msg)
-        //     // })
-        // })
         this.handleChange = this.handleChange.bind(this);
         this.onClickButton = this.onClickButton.bind(this);
     }
@@ -33,7 +23,7 @@ class Home extends React.Component{
 
     onClickButton(){
         callRoomList()
-        sendName("sendName",this.state.myName);
+        sendName(this.state.myName);
     }
 
     render(){
