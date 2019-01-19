@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {sendMessage} from '../api/customSocket'
 
 class Main extends Component {
@@ -11,6 +12,19 @@ class Main extends Component {
         }
     }
 
+
+    // connectServer = () => {
+    //     if (socket == null) {
+    //         socket = socketIOClient("http://143.248.38.120");
+            
+    //         socket.on('reload', (msg) => {
+    //             this.setState({
+    //                 players: this.state.players.splice(0, this.length).concat(msg)
+    //             })
+    //         })
+    //     }
+    // }
+
     handleSubmit = (e) => {
         // 페이지 리로딩 방지
         e.preventDefault();
@@ -22,6 +36,7 @@ class Main extends Component {
         }
         )
     }
+
     handleChange = (e) => {
         this.setState({
             message: e.target.value
@@ -44,9 +59,12 @@ class Main extends Component {
                 {list}
                 <input
                     value={this.state.message}
+
                     onChange={this.handleChange}></input> 
 
                  <button onClick={sendMessage(this.state.message)}>SEND</button>
+
+                <div>{this.state.message}</div>
             </div>
         )
     }
