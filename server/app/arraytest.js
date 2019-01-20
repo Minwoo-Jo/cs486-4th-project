@@ -72,3 +72,4 @@ update = (test) => {
 console.log(a.id)
 update(a)("id")("YEYP")
 console.log(a.id)
+console.log(a["d"]==undefined)
