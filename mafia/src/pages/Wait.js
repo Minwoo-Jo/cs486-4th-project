@@ -35,7 +35,7 @@ class Wait extends React.Component{
         else return "현재 상태 : "+state;
     }
     getMessage(state){
-        if(state=="000000") return "게임 설명 보기"
+        if(state==="000000") return "게임 설명 보기"
         else return state;
     }
     render(){
