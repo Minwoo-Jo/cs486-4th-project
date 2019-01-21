@@ -1,4 +1,5 @@
 import openSocket from 'socket.io-client';
+
 const socket = openSocket("http://143.248.38.120:80");
 
 function sendMessage(message){
@@ -23,6 +24,8 @@ function enterRoom(message){
     console.log("room id " + message);
     socket.emit("join_room",message)//들어간 방 정보
 }
+
+
 
 function getRoomStatus(cb){
     socket.on('update_room_status',roomInfo=>cb(null,roomInfo));

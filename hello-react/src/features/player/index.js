@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import circle from './circle.PNG'
 import handleMovement from './movement'
 
+
 function Player(props) {
     return (
         <div
