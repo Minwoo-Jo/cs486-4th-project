@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import {sendMessage,getRoomStatus,getGameResult,getTime,sendReady,getID,getMessage,rotateClock} from '../api/customSocket'
 import Popup from './Popup'
 import Time from '../components/Time'
@@ -31,7 +30,7 @@ class Main extends Component {
             {
                 name:"test4"
             }],
-            status : "onCreate",
+            status : "playing",
             isHidden: true
         }
         getRoomStatus((err,msg)=>{
@@ -112,26 +111,8 @@ class Main extends Component {
         }, 10000)
     }
 
-
-
-    // connectServer = () => {
-    //     if (socket == null) {
-    //         socket = socketIOClient("http://143.248.38.120");
-            
-    //         socket.on('reload', (msg) => {
-    //             this.setState({
-    //                 players: this.state.players.splice(0, this.length).concat(msg)
-    //             })
-    //         })
-    //     }
-    // }
-
-    handleSubmit = (e) => {
-        // 페이지 리로딩 방지
-        e.preventDefault();
-        // 상태값을 onCreate 를 통하여 부모에게 전달
-        this.props.onCreate(this.state);
-        // 상태 초기화
+    toggleHidden() {
+    
         this.setState({
             isHidden: !this.state.isHidden
         })
@@ -142,9 +123,7 @@ class Main extends Component {
             return player.id === getID()
         })
     }
-
     handleChange(e) {
-
         this.setState({
             message: e.target.value
         })
@@ -205,7 +184,6 @@ class Main extends Component {
                         onChange={this.handleChange}></input> 
 
                     <button onClick={()=>sendMessage(this.state.message)}>SEND</button>
-)
                     <div>{this.state.message}</div>
                 </div>
                 <div>
