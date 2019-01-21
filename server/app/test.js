@@ -35,15 +35,27 @@ setInterval(() => {
             room["time"]++;
 
             if(room["time"] == room["time_stamp"]){
-                update_room_info(room["id"])("state")("playing")
-                update_room_info(room["id"])("time")(0)
-                io.to(room["id"]).emit('game_start', room)
+              room["state"] = "playing"
+              room["time"] = 0;
+              io.to(room["id"]).emit('room_info', room)
             }
         }
 
         if (room["state"] == "playing") {
-
             room["time"]++;
+            if(room["time"]==180){
+               room["state"] = "voting";
+               room["time"] = 0;
+               room["time_stamp"] = 10;
+               io.to(room["id"]).emit('room_info', room)
+            }
+        }
+        if (room["state"] == "voting") {
+            room["time"]++;
+            if(room["time"] == room["time_stamp"]){
+                room["state"] = "playing"
+                io.to(room["id"]).emit('room_info', room)
+            }
         }
         if( room["state"] == "end") {
 
@@ -110,7 +122,7 @@ io.on('connection', (socket) => {
             socket.join(user_info.current_room);
             join_new_room(Rooms)(user_info.current_room)(user_info);
             io.emit('update_room_list', Rooms);
-            io.to(before_room_id).emit('room_info', get_current_room(user_info.current_room))
+            io.to(user_info.current_room).emit('room_info', get_current_room(user_info.current_room))
             console.log(Rooms);
         }
     })
@@ -147,7 +159,7 @@ io.on('connection', (socket) => {
         Rooms = Rooms.concat({
             id: room_id,
             players: [],
-            state: "waiting",
+            state: "wait",
             time: 0,
             time_stamp: 0
         })
@@ -191,17 +203,20 @@ io.on('connection', (socket) => {
             ready = false;
         }
         io.to(user_info.current_room).emit("room_info", get_current_room(user_info.current_room))
+        
+        //FOR GAME START
         var ready_all = [];
         get_current_room(user_info.current_room)["players"].forEach((x) => ready_all.push(x.isReady))
         if (!ready_all.includes(false)) {
             update_room_info(user_info.current_room)("time_stamp")(get_current_room(user_info.current_room)["time"]+5);
+            update_room_info(user_info.current_room)("state")("ready");
         } else {
             update_room_info(user_info.current_room)("time_stamp")(null);
         }
-
+        io.to(user_info.current_room).emit("room_info", get_current_room(user_info.current_room))
     })
 
-    //GAME START
+
 
 
     //SET VOTE
