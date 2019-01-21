@@ -1,21 +1,34 @@
 import React, { Component } from 'react';
-import Option from './Option';
 
-class Popup extends Component {
-    static defaultProps = {
-        data: []
+export class Popup extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            vote : 1,
+            players : []
+        }
     }
 
     render() {
-        const {  data  } = this.props;
-        const list = data.map(
-            info => (<Option key={info.id} info={info}/>)
+
+        const list = this.props.players.map(player => 
+            <div className="form-check">
+                <label>
+                    <input
+                        type="radio"
+                        name="react-tips"
+                        value= {player.name}
+                        className="form-check-input"
+                    />
+                    {player.name}
+                </label>
+            </div>
         );
 
         return (
             <div>
                 {  list  }
-                <button>투표하기</button>
+                <button onClick={()=>this.props.vote(this.state.vote)}>투표하기</button>
             </div>
         )
     }

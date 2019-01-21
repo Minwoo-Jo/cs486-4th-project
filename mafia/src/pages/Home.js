@@ -9,7 +9,9 @@ class Home extends React.Component{
         super()
         this.state={
             myName:"",
-            List:[]
+            List:[],
+            clicked:false,
+            showWait : true
         }
         this.handleChange = this.handleChange.bind(this);
         this.onClickButton = this.onClickButton.bind(this);
@@ -22,8 +24,13 @@ class Home extends React.Component{
     }
 
     onClickButton(){
+      if(this.state.myName !==""){
         callRoomList()
         sendName(this.state.myName);
+        this.setState({
+            clicked : true
+        })
+      }
     }
 
     render(){
@@ -31,13 +38,13 @@ class Home extends React.Component{
             <div class="wrapper">
              <div class="header">Mafia
               <input type="text" placeholder="이름을 입력하세요~" id = "getName" value = {this.state.myName} onChange={this.handleChange}/>  
-            <button onClick={this.onClickButton}>
+            <button onClick={this.onClickButton} disabled={this.state.clicked}>
              시작!
              </button></div>
             {/* 게임상태에 따라 버튼 클릭 가능 불가능 하게 만들기 */}
 
              <div class="rightCol">
-             <Wait />
+             <Wait/>
              </div>
 
              <div class="mid">
