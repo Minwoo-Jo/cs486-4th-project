@@ -21,12 +21,32 @@ var Rooms = [{
     id: lobby,
     players: [],
     state: null,
-    time: 0
+    time: 0,
+    time_stamp: 0
 }]
 setInterval(() => {
     Rooms.forEach((room) => {
-        if (room["state"] == "start") {
-            room["time"]++
+
+        if (room["state"] == "wait") {
+
+        }
+
+        if (room["state"] == "ready") {
+            room["time"]++;
+
+            if(room["time"] == room["time_stamp"]){
+                update_room_info(room["id"])("state")("playing")
+                update_room_info(room["id"])("time")(0)
+                io.to(room["id"]).emit('game_start', room)
+            }
+        }
+
+        if (room["state"] == "playing") {
+
+            room["time"]++;
+        }
+        if( room["state"] == "end") {
+
         }
     });
 }, 1000)
@@ -36,6 +56,7 @@ var time_in_rooms = [];
 
 //SOCKET
 io.on('connection', (socket) => {
+    //USER STATUS
     var user_info = {
         id: socket.id,
         name: null,
@@ -43,7 +64,7 @@ io.on('connection', (socket) => {
         isMaster: false,
         isReady: false,
         isAlive: true,
-        vote : true,
+        vote: true,
         isVoted: 0,
         current_room: lobby
     }
@@ -53,17 +74,15 @@ io.on('connection', (socket) => {
     timer = setInterval(() => { socket.emit('time_test', time++) }, 1000)
 
     // SET LOBBY
+
     console.log("set lobby");
     user_info.current_room = lobby;
     socket.join(lobby);
     join_new_room(Rooms)(user_info.current_room)(user_info);
-
     //io.to(lobby).emit('update_room_list', Rooms);
-
     io.to(lobby).emit('room_info', get_current_room(user_info.current_room))
-
-
     console.log(Rooms);
+
     // SET USER NAME
     socket.on('set_name', (msg) => {
         console.log("TEST");
@@ -75,6 +94,7 @@ io.on('connection', (socket) => {
     })
 
     socket.emit('update_user_count', clients.length);
+
     // JOIN ROOM
     socket.on('join_room', (room_id) => {
         if (user_info.current_room != room_id) {
@@ -94,6 +114,7 @@ io.on('connection', (socket) => {
             console.log(Rooms);
         }
     })
+
     //LEAVE ROOM
     socket.on('leave_room', (room_id) => {
 
@@ -111,6 +132,7 @@ io.on('connection', (socket) => {
         io.to(user_info.current_room).emit('room_info', get_current_room(user_info.current_room))
         console.log(Rooms);
     })
+
     //CREATE ROOM
     socket.on('create_room', () => {
         var room_id = moment().format("mmssSS");
@@ -126,7 +148,8 @@ io.on('connection', (socket) => {
             id: room_id,
             players: [],
             state: "waiting",
-            time: 0
+            time: 0,
+            time_stamp: 0
         })
         socket.join(room_id);
         user_info.current_room = room_id;
@@ -136,9 +159,10 @@ io.on('connection', (socket) => {
 
         io.emit('update_room_list', Rooms);
         socket.emit('room_info', get_current_room(user_info.current_room))
-        //       console.log(Rooms);
+        //console.log(Rooms);
 
     })
+
     // DISCONNECT
     socket.on('disconnect', () => {
         console.log('user disconnected');
@@ -167,14 +191,25 @@ io.on('connection', (socket) => {
             ready = false;
         }
         io.to(user_info.current_room).emit("room_info", get_current_room(user_info.current_room))
-    })
-    //SET VOTE
-    socket.on('set_vote', (user_id) => {
-        if(user_info.vote){
-            update_user_info(user_info)("vote")(false);
-            update_user_info(get_user_info(user_id)(user_info.current_room))("isVoted")(get_user_info(user_id)["isVoted"]+1);
+        var ready_all = [];
+        get_current_room(user_info.current_room)["players"].forEach((x) => ready_all.push(x.isReady))
+        if (!ready_all.includes(false)) {
+            update_room_info(user_info.current_room)("time_stamp")(get_current_room(user_info.current_room)["time"]+5);
+        } else {
+            update_room_info(user_info.current_room)("time_stamp")(null);
         }
 
+    })
+
+    //GAME START
+
+
+    //SET VOTE
+    socket.on('set_vote', (user_id) => {
+        if (user_info.vote) {
+            update_user_info(user_info)("vote")(false);
+            update_user_info(get_user_info(user_id)(user_info.current_room))("isVoted")(get_user_info(user_id)["isVoted"] + 1);
+        }
     })
 
     ///

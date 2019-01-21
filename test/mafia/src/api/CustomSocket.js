@@ -15,6 +15,9 @@ function subscribeRoom(cb){
 function callRoomList(){
     socket.emit('callRooms');
 }
+function getId() {
+    return socket.id
+}
 
 
 export { subscribeGame };
