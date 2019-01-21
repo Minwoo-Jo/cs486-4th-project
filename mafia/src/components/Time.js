@@ -14,7 +14,6 @@ class Time extends Component {
         this.setContext = this.setContext.bind(this)
 
         rotateClock((err, msg) => {
-            console.log(msg)
             this.setState({
                 rotation: this.state.rotation + 1.5
             })
@@ -22,7 +21,6 @@ class Time extends Component {
     }
 
     setContext(r) {
-        console.log(r)
         this.ctx = r.getContext("2d")
     }
 
@@ -36,7 +34,7 @@ class Time extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         let shouldUpdate = this.state.rotation !== nextState.rotation
-        console.log(shouldUpdate)
+
         return shouldUpdate
     }
 

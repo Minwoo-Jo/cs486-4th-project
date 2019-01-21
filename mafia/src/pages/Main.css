@@ -8,28 +8,121 @@
 .chatbody {
     background-color: aqua;
     position: absolute;
-    bottom: 0;
+    bottom: 30px;
 }
 
 .gamebody {
+    position: relative;
     height: 100%;
     background-size: cover;
 }
 
 #fire {
     position: absolute;
-    top: 400px;
-    left: 700px;
+    top: 43%;
+    left: 45%;
+}
+
+#char0 {
+    position: absolute;
+    top: 25%;
+    left: 45%;
 }
 
 #char1 {
     position: absolute;
-    top: 250px;
-    left: 700px;
+    top: 43%;
+    left: 63%;
 }
 
 #char2 {
     position: absolute;
-    top: 400px;
-    right: 500px;
+    top: 43%;
+    left: 28%;
+}
+
+#char3 {
+    position: absolute;
+    top: 63%;
+    left: 45%;
+}
+
+#char4 {
+    position: absolute;
+    top: 28%;
+    left: 56%;
+}
+
+#char5 {
+    position: absolute;
+    top: 28%;
+    left: 34%;
+}
+
+#char6 {
+    position: absolute;
+    top: 57%;
+    left: 34%;
+}
+
+#char7 {
+    position: absolute;
+    top: 57%;
+    left: 56%;
+}
+
+#msg0 {
+    position: absolute;
+    top: 19%;
+    left: 46%;
+    z-index: 99;
+}
+
+#msg1 {
+    position: absolute;
+    top: 38%;
+    left: 63%;
+    z-index: 99;
+}
+
+#msg2 {
+    position: absolute;
+    top: 38%;
+    left: 28%;
+    z-index: 99;
+}
+
+#msg3 {
+    position: absolute;
+    top: 58%;
+    left: 46%;
+    z-index: 99;
+}
+
+#msg4 {
+    position: absolute;
+    top: 25%;
+    left: 57%;
+    z-index: 99;
+}
+
+#msg5 {
+    position: absolute;
+    top: 23%;
+    left: 34%;
+    z-index: 99;
+}
+
+#msg6 {
+    position: absolute;
+    top: 53%;
+    left: 34%;
+    z-index: 99;
+}
+
+#msg7 {
+    position: absolute;
+    top: 54%;
+    left: 58%;
+    z-index: 99;
 }

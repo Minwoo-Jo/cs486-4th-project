@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {sendMessage,getRoomStatus,getGameResult,getTime,sendReady,getID,getMessage,rotateClock} from '../api/customSocket'
-import Popup from './Popup'
+import {sendMessage,getRoomStatus,getGameResult,getTime,sendReady,getID,rotateClock} from '../api/customSocket'
+import {Popup} from './Popup'
 import Time from '../components/Time'
 import './Main.css';
 
@@ -8,12 +8,20 @@ import './Main.css';
 import fire from '../images/fire.gif'
 import char1 from '../images/char1.gif'
 import char2 from '../images/char2.gif'
+import char3 from '../images/char3.gif'
+import char4 from '../images/char4.gif'
+import char5 from '../images/char5.gif'
+import char6 from '../images/char6.gif'
+import char7 from '../images/char7.gif'
+import char8 from '../images/char8.gif'
 import forest from '../images/forest.jpg'
 
 //백그라운드 사진 
 var backgroundStyle = {
     backgroundImage: `url(${forest})`
 }
+
+let charCounter = 0
 
 class Main extends Component {
     timer; 
@@ -30,17 +38,37 @@ class Main extends Component {
             {
                 name:"test4"
             }],
-            status : "playing",
-            isHidden: true
+            status : "wait",
+            isHidden: true,
+            message : "",
+            inGameStatus : "",
+            vote : 0,
+            charactersList: [char1,char2,char3,char4,char5,char6,char7,char8]
         }
+        this.onHandleChange = this.onHandleChange.bind(this)
+        this.onClickButton = this.onClickButton.bind(this)
+        this.ready = this.ready.bind(this)
         getRoomStatus((err,msg)=>{
             console.log("get room status")
             console.log(msg)
             this.setState({
                 room_id : msg.id,
                 players: msg.players,
-                isPlaying : msg.isPlaying
+                status : msg.state,
+                inGameStatus : msg.in_game_status
             })
+            if(this.state.inGameStatus === "voting" && this.state.isHidden === true)
+            {
+                this.setState({
+                    isHidden : false
+                })
+            }
+            else if(this.state.inGameStatus === "night")
+            {
+                this.setState({
+                    isHidden:true
+                })
+            }
         })
       /*  getJoinRoomInfo((err,msg)=>{
             console.log(msg)
@@ -96,55 +124,119 @@ class Main extends Component {
                 
             }
         })
-        // getMessage((err,msg)=>{
-            //메세지는 어떻게 처리하는것이 좋을까?
-            //player에 포함되는데 전체로 받으면 3초만 띄우는것이 가능할까?
-            //change가 생긴 경우 3초 띄우는 형식 vs 메세지를 아예 따로 받아 한번만 받게 만드는 경우
-        // })
     }
-    hideWithTimer() {
-        this.timer = setTimeout(() => {
-            // this.toggleHidden()
-            this.setState({
-                isHidden: true
-            })
-        }, 10000)
-    }
+    // hideWithTimer() {
+    //     this.timer = setTimeout(() => {
+    //         // this.toggleHidden()
+    //         this.setState({
+    //             isHidden: true
+    //         })
+    //     }, 10000)
+    // }
+    handleSubmit = (e) => {
+        // 페이지 리로딩 방지
 
+        e.preventDefault();
+        // 상태값을 onCreate 를 통하여 부모에게 전달
+        this.props.onCreate(this.state);
+        // 상태 초기화
+        this.setState({
+            message: ""
+        }
+        )
+    }
     toggleHidden() {
-    
         this.setState({
             isHidden: !this.state.isHidden
         })
-        this.hideWithTimer()
+     //   this.hideWithTimer()
     }
     getMyPlayer(){
         return this.state.players.find((player) => {
             return player.id === getID()
         })
     }
-    handleChange(e) {
+    onHandleChange(e) {
         this.setState({
             message: e.target.value
         })
     }
-    chat(){
-        sendMessage(this.state.message)
-    }
     ready(){
         sendReady()
     }
+    checkReady(state){
+        if(state==true)
+        {
+            return "ready"
+        }
+        else{
+            return "not ready"
+        }
+    }
+    onClickButton(e){
+        if(this.state.message !==""){
+        sendMessage(this.state.message)
+        this.setState({
+              message : ""
+          })
+        }
+    }  
+    
+    update(value){
+        this.setState({
+            isHidden : true
+         })
+    }
 
     render() {
-        if(this.state.status === "onCreate")//username 입력 하기도 전 처음 상태
+        const characters = this.state.players.map((player) => 
         {
-            return(
-                <div>이름을 입력하세요!</div>
+            if(player.message != null) {
+                return (
+                <div>
+                <p id={"msg" + charCounter} >{player.message}</p>
+                <img id={"char" + charCounter} src = {this.state.charactersList[charCounter++]} alt="image테스트"/>
+                </div>
+                )
+            }
+            else {
+                return (
+                <div>
+                    <img id={"char" + charCounter} src = {this.state.charactersList[charCounter++]} alt="image테스트"/>
+                </div>
             )
+            }
+            
         }
-        else if(this.state.status ==="wait" || this.state.status ==="ready")//게임 대기중
-        {
-             const list = this.state.players.map(player =>
+
+        ); charCounter = 0
+        // if(this.state.status === null || this.state.room_id ==="000000")//username 입력 하기도 전 처음 상태
+        // {
+        //     return(
+        //         <div>마피아 게임 rule</div>
+        //     )
+        // }
+        // else if(this.state.status==="wait" || this.state.status ==="ready")//게임 대기중
+        // {
+        //      const list = this.state.players.map(player =>
+        //     <div>
+        //         <br/>
+        //         <br/>
+        //         {player.name} : {this.checkReady(player.isReady)}
+        //         <br/>
+        //         <br/>
+        //         {player.message}
+        //         <br/>
+        //         <br/>
+        //     </div>);
+        //     return(
+        //         <div>{list}
+        //          <input ref={(ref) => this.test = ref} type="text" placeholder="chat" value = {this.state.message} onChange={this.onHandleChange}/>  
+        //     <button onClick={this.onClickButton}>채팅</button><button onClick={this.ready}>Ready</button></div>
+        //     )
+        // // }
+        // else if(this.state.status === "playing"){//게임 플레이중
+        const list = this.state.players.map(player =>
             <div>
                 <div>{player.message}</div>
                 <p></p>
@@ -153,59 +245,33 @@ class Main extends Component {
                 </br>
                 <br></br>
             </div>);
-            return(
-                <div>{list}<button onClick={this.ready}>Ready</button></div>
-            )
-        }
-        else if(this.state.status === "playing"){//게임 플레이중
-            const list = this.state.players.map(player =>
-                <div>
-                    <div>{player.message}</div>
-                    <p></p>
-                    {player.name} 
-                    <br>
-                    </br>
-                    <br></br>
-                </div>);
-            return(
-                <section class="mainbody">
-                <div class="gamebody" style={  backgroundStyle  }>
-                    <Time />
-                    <img id="fire" src={fire} alt="fire gif"/>
-                    <img id="char1" src={char1} alt="char1 gif"/>
-                    <img id="char2" src={char2} alt="char2 gif"/>
-                </div>
-
-                <div class="chatbody">
-                    {/* {list} */}
-                    <input
-                        value={this.state.message}
-
-                        onChange={this.handleChange}></input> 
-
-                    <button onClick={()=>sendMessage(this.state.message)}>SEND</button>
-                    <div>{this.state.message}</div>
-                </div>
-                <div>
-                    {!this.state.isHidden && <Popup data={this.state.players} />}
-                    <button onClick={this.toggleHidden.bind(this)}>
-                        show vote
-                    </button>
-                    
-                </div> 
-            </section>
-            )
-        }
-        else if(this.state.state === "end"){//게임 완료
-            return(
-                <div>Result</div>
-            )
-        }
-        console.log(this.state.status)
         return(
-            <div>error</div>
+        <div class="mainbody">
+            <div class="gamebody" style={  backgroundStyle  }>
+                <Time />
+                <img id="fire" src={fire} alt="fire gif"/>
+                { characters }
+
+                <div>
+                {!this.state.isHidden &&<div><Popup players={this.state.players} vote={this.update.bind(this)} />
+                </div>}
+                </div> 
+            </div>
+            <div class="chatbody">
+                <input
+                     type="text" placeholder="이름을 입력하세요~"
+                    value={this.state.message}
+                    onChange={this.onHandleChange}></input> 
+                <button onClick={this.onClickButton}>SEND</button>
+            </div>   
+        </div>
         )
-    }
+        }
+        // console.log(this.state.state)
+        // return(
+        //     <div>error</div>
+        // )
+ //  }
 }
 
 export default Main;
