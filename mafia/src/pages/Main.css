@@ -1,0 +1,35 @@
+.mainbody {
+    color: white;
+    height: 100%;
+    position: relative;
+    background-color: black;
+} 
+
+.chatbody {
+    background-color: aqua;
+    position: absolute;
+    bottom: 0;
+}
+
+.gamebody {
+    height: 100%;
+    background-size: cover;
+}
+
+#fire {
+    position: absolute;
+    top: 400px;
+    left: 700px;
+}
+
+#char1 {
+    position: absolute;
+    top: 250px;
+    left: 700px;
+}
+
+#char2 {
+    position: absolute;
+    top: 400px;
+    right: 500px;
+}

@@ -33,10 +33,6 @@ function createRoom(){
     socket.emit("create_room");
 }
 
-function getJoinRoomInfo(cb){
-    socket.on('room_info',rooms=>cb(null,rooms));//join한 방의 정보를 받아오는 함수
-}
-
 function getGameResult(cb){
     socket.on('update_game_result',result =>cb(null,result));//게임이 끝나는 경우 서버에서 결과 받아오는 함수, 지금은 일단 Main.js에 틀 구현해놓음, 서버로 옮겨야함
 }
@@ -53,4 +49,10 @@ function getID(){
     return socket.id
 }
 
-export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getJoinRoomInfo,getGameResult,getTime,sendReady,getID}
+function getMessage(cb){
+    socket.on("update_message", message=>cb(null,message));
+}//필요없으면 지우기
+function rotateClock(clock) {
+    socket.on("time_test", seconds=> clock(null,seconds));
+}
+export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getGameResult,getTime,sendReady,getID,getMessage,rotateClock}

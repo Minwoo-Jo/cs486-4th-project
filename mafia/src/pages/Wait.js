@@ -29,7 +29,6 @@ class Wait extends React.Component{
         createRoom();
     }
     render(){
-        console.log(this.state.showRoomList)
         var cnt=1;
         const list = this.state.roomList.map(room =>
             <div>
