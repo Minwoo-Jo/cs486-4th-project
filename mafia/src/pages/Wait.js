@@ -1,6 +1,7 @@
 import React from 'react';
 import './Wait.css';
 import {getRoomList,enterRoom,createRoom} from '../api/customSocket'
+import buttonUnclick from '../images/button_unclick.png'
 
 class Wait extends React.Component{
     constructor(props) {
@@ -43,17 +44,19 @@ class Wait extends React.Component{
         const list = this.state.roomList.map(room =>{
             if(room.id !="000000"){return(
             <div>
-                <div>{cnt++}.{this.getMessage(room.id)} </div>
+                <div>{cnt++}.{this.getMessage(room.id)} </div><br></br>
+                {room.players.length}명 {this.getStatus(room.state)}
                 <p></p><button onClick={()=>this.onClickButton(room.id)}>
-             입장
+                <img id="buttonImage" src={buttonUnclick} alt="button image" />
+                <div class="centered">입장</div>
              </button>
-                {room.players.length}명 {this.getStatus(room.state)}<div class="back"></div>
+               <div class="back"></div>
                 <br>
                 </br>
                 <br></br>
         </div>)}});
         return (
-            this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}>방 만들기</button></div>: <div></div>
+            this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}><div class="centered">방만들기</div><img id="buttonImage" src={buttonUnclick} alt="button image" /></button></div>: <div></div>
         )
     }
 }

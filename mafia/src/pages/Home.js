@@ -4,12 +4,17 @@ import Wait from './Wait'
 import Main from './Main'
 import {sendName,callRoomList} from '../api/customSocket'
 import mafiaLogo from '../images/mafia.gif'
+import buttonUnclick from '../images/button_unclick.png'
 
 import forest from '../images/forest.jpg'
 //백그라운드 사진 
 var backgroundStyle = {
     backgroundImage: `url(${forest})`
 }
+
+// var buttonStyle = {
+//     backgroundImage: `url(${buttonUnclick})`
+// }
 
 class Home extends React.Component{
     constructor(){
@@ -31,6 +36,7 @@ class Home extends React.Component{
     }
 
     onClickButton(){
+        console.log("clicked")
       if(this.state.myName !==""){
         callRoomList()
         sendName(this.state.myName);
@@ -48,7 +54,8 @@ class Home extends React.Component{
                 <div id="textinput">
                     <input type="text" placeholder="이름을 입력해주세요" id = "getName" value = {this.state.myName} onChange={this.handleChange}/>  
                         <button onClick={this.onClickButton} disabled={this.state.clicked}>
-                        시작!
+                        <img id="buttonImage" src={buttonUnclick} alt="button image" />
+                        <div class="centered">입장</div>
                         </button>
                 </div>
                 
