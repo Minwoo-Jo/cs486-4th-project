@@ -39,7 +39,7 @@ class Main extends Component {
                 name:"test4"
             }],
             status : "wait",
-            isHidden: true,
+            isHidden: false,
             message : "",
             inGameStatus : "",
             vote : 0,
@@ -48,6 +48,7 @@ class Main extends Component {
         this.onHandleChange = this.onHandleChange.bind(this)
         this.onClickButton = this.onClickButton.bind(this)
         this.ready = this.ready.bind(this)
+        this.voteFinish = this.voteFinish.bind(this)
         getRoomStatus((err,msg)=>{
             console.log("get room status")
             console.log(msg)
@@ -62,13 +63,19 @@ class Main extends Component {
                 console.log("show vote")
                 console.log(this.state.inGameStatus)
                 this.setState({
-                    isHidden : !this.state.isHidden
+                    isHidden : false
                 })
             }
             else if(this.state.inGameStatus === "night")
             {
                 this.setState({
-                    isHidden:true
+                    isHidden:false
+                })
+            }
+            else if(this.state.inGameStatus === "day" && this.state.isHidden === false )
+            {
+                this.setState({
+                    isHidden : true
                 })
             }
         })
@@ -97,7 +104,6 @@ class Main extends Component {
     }
 
     getMyStatus() {
-        console.log("get my status")
        return this.state.inGameStatus
     }
     
@@ -112,7 +118,7 @@ class Main extends Component {
     }
 
     checkReady(state){
-        if(state==true)
+        if(state===true)
         {
             return "ready"
         }
@@ -129,13 +135,12 @@ class Main extends Component {
           })
         }
     }  
-    
-    update(value){
+    voteFinish(value){
+        console.log("voteFinish")
         this.setState({
             isHidden : true
-         })
+    })
     }
-
     render() {
         const characters = this.state.players.map((player) => 
         {
@@ -159,7 +164,7 @@ class Main extends Component {
         if(this.state.status === null || this.state.room_id ==="000000")//username 입력 하기도 전 처음 상태
         {
             return(
-                <div>마피아 게임 rule</div>
+                <div></div>
             )
         }
         else if(this.state.status==="wait" || this.state.status ==="ready")//게임 대기중
@@ -181,7 +186,7 @@ class Main extends Component {
             <button onClick={this.onClickButton}>채팅</button><button onClick={this.ready}>Ready</button></div>
             )
          }
-        else if(this.state.status === "playing" ){//게임 플레이중
+        else if(this.state.status === "playing" && this.state.inGameStatus === "day"){//게임 플레이중, day
         const list = this.state.players.map(player =>
             <div>
                 <div>{player.message}</div>
@@ -193,12 +198,11 @@ class Main extends Component {
             </div>);
         return(
         <div class="mainbody">
-        <div>{this.getMyRole()}</div>
+        <div>{this.getMyRole()} {this.state.inGameStatus}</div>
             <div class="gamebody" style={  backgroundStyle  }>
                 <Time />
                 <img id="fire" src={fire} alt="fire gif"/>
                 { characters }
-        <Popup isHidden = {true} role = {this.getMyRole()} status = {this.getMyStatus()} players={this.state.players} vote={this.update.bind(this)} />
             </div>
             <div class="chatbody">
                 <input
@@ -210,6 +214,70 @@ class Main extends Component {
         </div>
           )
          }
+        else if(this.state.status === "playing" && this.state.inGameStatus === "voting")
+        {
+            const list = this.state.players.map(player =>
+                <div>
+                    <div>{player.message}</div>
+                    <p></p>
+                    {player.name} 
+                    <br>
+                    </br>
+                    <br></br>
+                </div>);
+            return(
+            <div class="mainbody">
+            <div>{this.getMyRole()}</div>
+                <div class="gamebody" style={  backgroundStyle  }>
+                    <Time />
+                    <img id="fire" src={fire} alt="fire gif"/>
+                    { characters }
+            <Popup isHidden = {this.state.isHidden} role = {this.getMyRole()} status = {this.getMyStatus()} players={this.state.players} vote ={this.voteFinish}/>
+                </div>
+                <div class="chatbody">
+                    <input
+                         type="text" placeholder="Chat"
+                        value={this.state.message}
+                        onChange={this.onHandleChange}></input> 
+                    <button onClick={this.onClickButton}>SEND</button>
+                </div>   
+            </div>
+              )
+        }
+        else if(this.state.status === "playing" && this.state.inGameStatus === "night")
+        {
+            const list = this.state.players.map(player =>
+                <div>
+                    <div>{player.message}</div>
+                    <p></p>
+                    {player.name} 
+                    <br>
+                    </br>
+                    <br></br>
+                </div>);
+            return(
+            <div class="mainbody">
+            <div>{this.getMyRole()}</div>
+                <div class="gamebody" style={  backgroundStyle  }>
+                    <Time />
+                    <img id="fire" src={fire} alt="fire gif"/>
+                    { characters }
+            <Popup isHidden = {this.state.isHidden} role = {this.getMyRole()} status = {this.getMyStatus()} players={this.state.players} vote={this.voteFinish}/>
+                </div>
+                <div class="chatbody">
+                    <input
+                         type="text" placeholder="Chat"
+                        value={this.state.message}
+                        onChange={this.onHandleChange}></input> 
+                    <button onClick={this.onClickButton}>SEND</button>
+                </div>   
+            </div>
+              )
+        }
+        else if(this.state.status === "end")
+        {
+            //결과 렌더링
+        }
         console.log(this.state.state)
         return(
             <div>error</div>
