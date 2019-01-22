@@ -7,8 +7,11 @@
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
-  text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center;
+  align-items: center; */
 }
 .wrapper {
   display: grid;
@@ -24,11 +27,19 @@
   grid-column: 6/7;
   grid-row: 2/11;
   background-color: lightblue;
+  height: 100%;
+  color: white;
+  background-size: cover;
+  padding: 10px;
 }
 .mid{
   background-color: lightgrey;
+  color: white;
   grid-column: 1/6;
   grid-row: 2 / 11;
+  height: 100%;
+  background-size: cover;
+  padding: 0px 0px 0px 15px;
 }
 
 
@@ -43,6 +54,7 @@ button{
   cursor:pointer;
   transition:800ms ease all;
   outline:none;
+  margin: 0px 5px 0px 5px;
 }
 
 button:hover{
@@ -75,3 +87,13 @@ input{
   height:25px;
   font-size:0.8em;
 }
+
+#textinput {
+  position: absolute;
+  right:0;
+}
+
+#logo {
+  margin: 15px;
+}
+

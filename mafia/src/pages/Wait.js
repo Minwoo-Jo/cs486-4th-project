@@ -35,12 +35,13 @@ class Wait extends React.Component{
         else return "현재 상태 : "+state;
     }
     getMessage(state){
-        if(state=="000000") return "게임 설명 보기"
+        if(state==="000000") return "로비로"
         else return state;
     }
     render(){
         var cnt=1;
-        const list = this.state.roomList.map(room =>
+        const list = this.state.roomList.map(room =>{
+            if(room.id !="000000"){return(
             <div>
                 <div>{cnt++}.{this.getMessage(room.id)} </div>
                 <p></p><button onClick={()=>this.onClickButton(room.id)}>
@@ -50,9 +51,9 @@ class Wait extends React.Component{
                 <br>
                 </br>
                 <br></br>
-            </div>);
+        </div>)}});
         return (
-            this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}>방 만들기</button></div>: <div>주의사항</div>
+            this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}>방 만들기</button></div>: <div></div>
         )
     }
 }
