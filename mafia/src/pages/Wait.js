@@ -1,6 +1,7 @@
 import React from 'react';
 import './Wait.css';
-import {getRoomList,enterRoom,createRoom,getJoinRoomInfo} from '../api/customSocket'
+import {getRoomList,enterRoom,createRoom} from '../api/customSocket'
+import buttonUnclick from '../images/button_unclick.png'
 
 class Wait extends React.Component{
     constructor(props) {
@@ -14,6 +15,7 @@ class Wait extends React.Component{
         })
         getRoomList((err,msg)=>{
             console.log("getroomlist")
+            console.log(msg)
             this.setState({
                 roomList:msg,
                 showRoomList : true
@@ -28,22 +30,34 @@ class Wait extends React.Component{
     onCreateRoom(){
         createRoom();
     }
+    getStatus(state)
+    {
+        if(state==null) return "";
+        else return "현재 상태 : "+state;
+    }
+    getMessage(state){
+        if(state==="000000") return "로비로"
+        else return state;
+    }
     render(){
         var cnt=1;
-        const list = this.state.roomList.map(room =>
+        const list = this.state.roomList.map(room =>{
+            if(room.id !="000000"){return(
             <div>
-                <div>{cnt++}.{room.id} </div>
+                <div>{cnt++}.{this.getMessage(room.id)} </div><br></br>
+                {room.players.length}명 {this.getStatus(room.state)}
                 <p></p><button onClick={()=>this.onClickButton(room.id)}>
-             입장
+                <img id="buttonImage" src={buttonUnclick} alt="button image" />
+                <div class="centered">입장</div>
              </button>
-                사람 수<div class="back"></div>
+               <div class="back"></div>
                 <br>
                 </br>
                 <br></br>
-            </div>);
+        </div>)}});
         return (
-           this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}>방 만들기</button></div>: <div>주의사항</div>
-        );
+            this.state.showRoomList ? <div>{list}<button onClick={()=>this.onCreateRoom()}><div class="centered">방만들기</div><img id="buttonImage" src={buttonUnclick} alt="button image" /></button></div>: <div></div>
+        )
     }
 }
 

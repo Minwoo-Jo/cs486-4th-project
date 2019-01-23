@@ -14,16 +14,10 @@ class Time extends Component {
         this.setContext = this.setContext.bind(this)
 
         rotateClock((err, msg) => {
-            console.log(msg)
             this.setState({
                 rotation: this.state.rotation + 1.5
             })
         })
-    }
-
-    setContext(r) {
-        console.log(r)
-        this.ctx = r.getContext("2d")
     }
 
     componentDidMount() {
@@ -36,7 +30,7 @@ class Time extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         let shouldUpdate = this.state.rotation !== nextState.rotation
-        console.log(shouldUpdate)
+
         return shouldUpdate
     }
 
@@ -57,12 +51,15 @@ class Time extends Component {
         context.rotate(-pos)
     }
 
+    setContext(r) {
+        this.ctx = r.getContext("2d")
+    }
+
     render() {
 
         return (
             <div>
                 <canvas ref={this.setContext} width={160} height={160} />
-                <p>지금 rotation은: {this.state.rotation}</p>
                 <img ref="image" src={clock} alt="clock png" className="hidden" />
             </div>
         )
