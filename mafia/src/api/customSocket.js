@@ -3,7 +3,7 @@ const socket = openSocket("http://143.248.38.120:80");
 
 function sendMessage(message){
     console.log("send message");
-    socket.emit('send_message', message);
+    socket.emit('new_message', message);
 }//채팅할때 message를 보내준다
 
 function sendName(message){
@@ -25,34 +25,36 @@ function enterRoom(message){
 }
 
 function getRoomStatus(cb){
-    socket.on('update_room_status',roomInfo=>cb(null,roomInfo));
+    socket.on('room_info',roomInfo=>cb(null,roomInfo));
 }//들어와있는 방의 정보를 받아오는 함수, 로비가 아니라면 모두 ready 상태라면 게임 시작을 해준다
 
 function createRoom(){
     console.log("create room");
     socket.emit("create_room");
-}
-
-function getGameResult(cb){
-    socket.on('update_game_result',result =>cb(null,result));//게임이 끝나는 경우 서버에서 결과 받아오는 함수, 지금은 일단 Main.js에 틀 구현해놓음, 서버로 옮겨야함
-}
+}//새로 방 생성하면서 입장하기
 
 function getTime(cb){
     socket.on('get_time',time=>cb(null,time));//서버로 부터 시간 받아오는 함수
 }
 
 function sendReady(){
-    socket.emit("send_ready");//send ready는 is Ready를 반대로 바꾸어준다
+    socket.emit("set_ready");//send ready는 is Ready를 반대로 바꾸어준다
 }
 
 function getID(){
     return socket.id
-}
+}//소켓 아이디 반환
 
-function getMessage(cb){
-    socket.on("update_message", message=>cb(null,message));
-}//필요없으면 지우기
 function rotateClock(clock) {
     socket.on("time_test", seconds=> clock(null,seconds));
 }
-export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getGameResult,getTime,sendReady,getID,getMessage,rotateClock}
+
+function sendVote(vote) {
+    socket.emit("send_vote", vote)
+}
+
+function checkPeople(cb){
+    socket.on("check_people",ifMafia=>cb(null,ifMafia))
+}
+
+export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getTime,sendReady,getID,rotateClock,sendVote,checkPeople}
