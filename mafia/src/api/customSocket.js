@@ -33,10 +33,6 @@ function createRoom(){
     socket.emit("create_room");
 }//새로 방 생성하면서 입장하기
 
-function getGameResult(cb){
-    socket.on('update_game_result',result =>cb(null,result));//게임이 끝나는 경우 서버에서 결과 받아오는 함수, 지금은 일단 Main.js에 틀 구현해놓음, 서버로 옮겨야함
-}
-
 function getTime(cb){
     socket.on('get_time',time=>cb(null,time));//서버로 부터 시간 받아오는 함수
 }
@@ -57,5 +53,8 @@ function sendVote(vote) {
     socket.emit("send_vote", vote)
 }
 
+function checkPeople(cb){
+    socket.on("check_people",ifMafia=>cb(null,ifMafia))
+}
 
-export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getGameResult,getTime,sendReady,getID,rotateClock,sendVote}
+export { sendMessage,sendName,getRoomList,callRoomList,enterRoom,getRoomStatus,createRoom,getTime,sendReady,getID,rotateClock,sendVote,checkPeople}

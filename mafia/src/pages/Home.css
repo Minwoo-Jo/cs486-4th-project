@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Do+Hyeon');
+
+body{
+  font-family: 'Do Hyeon', sans-serif;
+  color: red;
+}
+
 .header {
   grid-area: header;
   grid-column: 1 / 7;
@@ -10,8 +17,15 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  /* justify-content: center;
-  align-items: center; */
+  
+
+  /* align-items: center; 
+  display: flex;
+  justify-content: space-between;
+  background-color: #212529;
+  width: 100vw;
+  align-items: center;
+  padding: 0 20px; */
 }
 .wrapper {
   display: grid;
@@ -31,6 +45,7 @@
   color: white;
   background-size: cover;
   padding: 10px;
+  font-family: 'Do Hyeon', sans-serif;
 }
 .mid{
   background-color: lightgrey;
@@ -43,7 +58,7 @@
 }
 
 
-button{
+/* button{
   background:#1AAB8A;
   color:#fff;
   border:none;
@@ -80,20 +95,49 @@ button:after{
 button:hover:before,button:hover:after{
   width:100%;
   transition:800ms ease all;
+} */
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color : white;
+  padding-bottom: 8px
 }
 
 input{
   background: #fff;
   height:25px;
   font-size:0.8em;
+  font-family: 'Do Hyeon', sans-serif;
 }
 
 #textinput {
-  position: absolute;
-  right:0;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  padding-right: 40px
 }
 
 #logo {
-  margin: 15px;
+  margin: 25px 20px;
 }
 
+#buttonImage {
+  height: 40px;
+  width: 150px;
+}
+
+button {
+  border:none;
+  position:relative;
+  background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+    font-family: 'Do Hyeon', sans-serif;
+    font-size:1em;
+}

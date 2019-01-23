@@ -1,20 +1,30 @@
+.fontt {
+    font-family: 'Do Hyeon', sans-serif;
+}
+
 .mainbody {
     color: white;
     height: 100%;
     position: relative;
     background-color: black;
+    font-size : 2em;
+    font : bold;
+    font-family: 'Do Hyeon', sans-serif;
 } 
 
 .chatbody {
-    background-color: aqua;
     position: absolute;
     bottom: 30px;
+    justify-content: center;
+    align-content: center;
+    font-family: 'Do Hyeon', sans-serif;
 }
 
 .gamebody {
     position: relative;
     height: 100%;
     background-size: cover;
+    font-family: 'Do Hyeon', sans-serif;
 }
 
 #fire {
@@ -125,4 +135,8 @@
     top: 54%;
     left: 58%;
     z-index: 99;
+}
+
+#chatInput {
+    margin-bottom: 10px;
 }
