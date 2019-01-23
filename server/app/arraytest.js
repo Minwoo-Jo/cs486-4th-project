@@ -1,75 +1,32 @@
 
-var Rooms = [{
-    id: "test",
-    players: [{
-        id: "test",
-        name: "test",
-        isMaster: false,
-        current_room: null
-    }, {
-        id: "test",
-        name: "test",
-        isMaster: false,
-        current_room: null
-    }]
-}]
-
-var user_info = {
-    id: "eyp",
-    name: null,
-    isMaster: false,
-    current_room: null
-}
-console.log(Rooms)
-Rooms.find(function (room) {
-    return room.id == "test"
-}).players.push(user_info)
-console.log(Rooms)
-
-var a = "test"
-console.log(a.length)
-// Rooms.concat({
-//     id: "test2",
-//     players: []
-// })
-
-var c = (a,b) => {
-    return a+b
+combine = (...xs) => {
+    return param => xs.reduceRight(
+        (result, x) => x(result), param
+    )
 }
 
-var a = (c) => {
-    return (d) => {
-        return c+d
-    }
-}
+f = (x) => (y) =>  x + y
+g = (a) => (b) =>  a * b
 
-console.log(a(3)(5))
 
-check = (rooms) => {
-    return (room_id) => {
-        room_id++
-        rooms++
-        return (player_id) => {
-            return rooms + " " + room_id + " " + player_id
-        }
-    }
-}
+const h = combine(f, g)
 
-console.log(check(1)(2)(3))
+const test = (x) => (y) => y(x)
+console.log(g(2)(3))
+console.log(f(g(2)(3))(3))
 
-var a = {
-    id : "test",
-    key : true
-}
 
-update = (test) => {
-    return (key) => {
-        return (value) =>{
-            test[key]= value
-        } 
-    }
-}
-console.log(a.id)
-update(a)("id")("YEYP")
-console.log(a.id)
-console.log(a["d"]==undefined)
+
+console.log(test(2)(test)(f)(2))
+console.log(test(2)(f)(2))
+
+
+//test = (2) = (test) = (test) = (f) = (2)
+//test(2)(f)(2)
+//f(2)(2)
+
+
+f = g => x => y => g(x)(y)
+
+
+console.log(f(g)(2)(3))
